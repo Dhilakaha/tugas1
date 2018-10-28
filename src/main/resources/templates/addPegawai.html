@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tambah Pegawai</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+
+<body>
+<nav th:replace="fragments/fragment :: navbar"></nav>
+
+    <div class="container">
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Tambah Pegawai</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action ="@{/pegawai/tambah}" th:object="${pegawai}" method="POST">
+                            <div class="form-group">
+                                <label><b>Nama</b></label>
+                                <input type = "text" class="form-control" name = "namaPegawai" placeholder="Nama" required="required"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Tempat Lahir</b></label>
+                                <input type="text" class="form-control" name = "tempatLahir" placeholder="Tempat Lahir" required="required" />
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Tanggal Lahir</b></label>
+                                <input type="date" class="form-control" name="tanggalLahir" placeholder="Tanggal Lahir" required="required"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Tahun Masuk</b></label>
+                                <input type = "number" class="form-control" name = "tahunMasuk" placeholder="Tahun Masuk" required="required"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Provinsi</b></label>
+                                <select  th:value="${listProvinsi}" class="form-control" name="provinsi" id="provinsi" required="required" >
+                                    <option disabled="disabled" selected="selected" >
+                                        --Pilih Provinsi--
+                                    </option>
+                                    <option th:each="provinsi : ${listProvinsi}"
+                                            th:value="${provinsi.getId()}"
+                                            th:text="${provinsi.getNama()}">
+                                    </option>
+                                </select>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Nama Instansi</b></label>
+                                <select  th:value="${listInstansi}" class="form-control" name="instansi" id="instansi" required="required" >
+                                    <option disabled="disabled" selected="selected" >
+                                        --Pilih Instansi--
+                                    </option>
+                                    <option th:each="instansi : ${listInstansi}"
+                                            th:value="${instansi.getId()}"
+                                            th:text="${instansi.getNama()}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Jabatan</b></label>
+                                <select  th:value="${listJabatan}" class="form-control" name="jabatan" id="jabatan" required="required" >
+                                    <option disabled="disabled" selected="selected" >
+                                        --Pilih Jabatan--
+                                    </option>
+                                    <option th:each="jabatan : ${listJabatan}"
+                                            th:value="${jabatan.getId()}"
+                                            th:text="${jabatan.getNamaJabatan()}">
+                                    </option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

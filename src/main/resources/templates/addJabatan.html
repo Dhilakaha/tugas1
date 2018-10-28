@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Tambah Jabatan</title>
+        <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+        <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+    </head>
+
+    <body>
+    <nav th:replace="fragments/fragment :: navbar"></nav>
+
+        <div class="container">
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Tambah Jabatan</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form th:action ="@{/jabatan/tambah}" th:object="${jabatan}" method="POST">
+                            <input type="hidden" name="id" th:value="${jabatan.getId()}"/>
+                            <div class="form-group">
+                                <label><b>Jabatan</b></label>
+                                <input type="text" class="form-control" name="namaJabatan" th:value="${jabatan.getNamaJabatan()}" placeholder="Nama jabatan">
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Deskripsi</b></label>
+                                <input type="text" class="form-control" name="deskripsiJabatan" th:value="${jabatan.getDeskripsiJabatan()}" placeholder="Masukan deskripsi jabatan">
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Gaji Pokok</b></label>
+                                <input type="number" class="form-control" name="gajiPokok" th:value="${jabatan.getGajiPokok()}" placeholder="Masukan gaji pokok">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+</html>

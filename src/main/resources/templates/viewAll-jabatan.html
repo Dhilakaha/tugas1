@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detail Pegawai</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+</head>
+
+<body>
+<nav th:replace="fragments/fragment :: navbar"></nav>
+
+    <div class="container">
+        <br>
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div align="center">
+                        <h3>SEMUA JABATAN</h3>
+                    </div>
+                    <br>
+                    <table id="myTable" class="display">
+                        <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Deskripsi</th>
+                            <th>Gaji Pokok</th>
+                            <th>Jumlah Pegawai</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="jabatan : ${listAllJabatan}">
+                            <td th:text="${jabatan.getNamaJabatan()}"></td>
+                            <td th:text="${jabatan.getDeskripsiJabatan()}"></td>
+                            <td th:text="${jabatan.getGajiPokok()}"></td>
+                            <td th:text="${jabatan.getListJabatanPegawai().size()}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+</script>
+</html>
