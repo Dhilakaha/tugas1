@@ -13,4 +13,5 @@ public interface PegawaiService {
     PegawaiModel findTertua(long idInstansi);
     int hitungGaji(String nip);
     List<PegawaiModel> findAll();
+    List<PegawaiModel> findAllByFilter(Long idprov, Long idInst, Long idJabatan);
 }

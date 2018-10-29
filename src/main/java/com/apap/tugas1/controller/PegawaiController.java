@@ -1,5 +1,6 @@
 package com.apap.tugas1.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.apap.tugas1.model.*;
@@ -62,7 +63,6 @@ public class PegawaiController {
         model.addAttribute("pegawai", new PegawaiModel());
 
         model.addAttribute("listProvinsi", listProvinsi);
-        //model.addAttribute("listInstansi", listInstansi);
         model.addAttribute("listJabatan", listJabatan);
         return "addPegawai";
     }
@@ -93,8 +93,6 @@ public class PegawaiController {
 
         nip = idInstansi + tglLahir + tahunMasuk + digitAkhir;
         pegawai.setNip(nip);
-
-        System.out.println(nip);
 
         pegawaiService.addPegawai(pegawai);
 
@@ -136,21 +134,22 @@ public class PegawaiController {
                              @RequestParam(value = "jabatan", required = false) Long idJabatan, Model model) {
 
         List<ProvinsiModel> listProvinsi = provinsiService.getAllPrivonsi();
-        List<InstansiModel> listInstansi = instansiService.getAllInstansi();
         List<JabatanModel> listJabatan = jabatanService.getAllJabatan();
+        List<PegawaiModel> listPegawai = new ArrayList<PegawaiModel>();
 
-        List<PegawaiModel> listPegawai = pegawaiService.findAll();
+        if(idprov != null || idInst != null || idJabatan != null){
+            listPegawai = pegawaiService.findAllByFilter(idprov, idInst, idJabatan);
+        } else {
+            listPegawai.removeAll(listPegawai);
+        }
 
         model.addAttribute("listProvinsi", listProvinsi);
-        model.addAttribute("listInstansi", listInstansi);
         model.addAttribute("listJabatan", listJabatan);
-
         model.addAttribute("listAllPegawai", listPegawai);
 
         return "cari-pegawai";
+
     }
-
-
 
     @RequestMapping(value = "/pegawai/termuda-tertua", method = RequestMethod.GET)
     private String pegawaiTermudaTertua(@RequestParam(value = "idInstansi") long id, Model model){

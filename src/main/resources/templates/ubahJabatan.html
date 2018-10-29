@@ -33,7 +33,7 @@
 
                                 <div class="form-group">
                                     <label><b>Gaji Pokok</b></label>
-                                    <input type="number" class="form-control" name="gajiPokok" th:value="${jabatan.getGajiPokok()}">
+                                    <input type="number" class="form-control" name="gajiPokok" th:value="${jabatan.getGajiPokok().intValue()}">
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Simpan</button>

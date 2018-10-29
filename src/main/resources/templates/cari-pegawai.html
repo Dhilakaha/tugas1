@@ -30,7 +30,7 @@
                                 <b>Provinsi </b><br>
                                 <select class="form-control" th:value="${listProvinsi}" name="provinsi" id="provinsi" required="required" >
                                     <option disabled="disabled" selected="selected" >
-                                        Pilih Provinsi
+                                        --Pilih Provinsi--
                                     </option>
                                     <option th:each="provinsi : ${listProvinsi}"
                                             th:value="${provinsi.getId()}"
@@ -39,20 +39,16 @@
                                 </select>
                                 <br>
                                 <b>Nama Instansi</b><br>
-                                <select  class="form-control" th:value="${listInstansi}" name="instansi" id="instansi" required="required" >
+                                <select  class="form-control" th:value="${listInstansi}"  name="instansi" id="instansi" required="required" >
                                     <option disabled="disabled" selected="selected" >
-                                        Pilih Instansi
-                                    </option>
-                                    <option th:each="instansi : ${listInstansi}"
-                                            th:value="${instansi.getId()}"
-                                            th:text="${instansi.getNama()}">
+                                        --Pilih Instansi--
                                     </option>
                                 </select>
                                 <br>
                                 <b>Jabatan</b><br>
                                 <select class="form-control" th:value="${listJabatan}" name="jabatan" id="jabatan" required="required" >
                                     <option disabled="disabled" selected="selected" >
-                                        Pilih Jabatan
+                                        --Pilih Jabatan--
                                     </option>
                                     <option th:each="jabatan : ${listJabatan}"
                                             th:value="${jabatan.getId()}"
@@ -113,6 +109,28 @@
 <script>
     $(document).ready(function () {
         $('#myTable').DataTable();
+
+        $("#provinsi").change(function(){
+            var idProv = $(this).val();
+            $.ajax({
+                method : "GET",
+                data : {id:idProv},
+                url : "/pegawai/instansi",
+                dataType : "json",
+                success: function(data){
+                    var obj = JSON.stringify(data);
+                    var objs = JSON.parse(obj);
+                    $("#instansi").empty();
+                    $("#instansi").append("<option disabled=\"disabled\" selected=\"selected\">--Pilih Instansi--</option>");
+                    for (x in objs){
+                        console.log(objs[x].nama);
+                        $("#instansi").append("<option value = "+ "'"+objs[x].id+"'"+">" + objs[x].nama +"</option>");
+                        console.log("<option value = "+ "'"+objs[x].id+"'"+">" + objs[x].nama +"</option>");
+                    }
+                }
+
+            });
+        });
     });
 </script>
 </html>
