@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface ProvinsiService {
     List<ProvinsiModel> getAllPrivonsi();
+    ProvinsiModel getProvinsiById(int id);
 }

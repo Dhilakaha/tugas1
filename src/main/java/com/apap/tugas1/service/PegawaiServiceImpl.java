@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 
+import com.apap.tugas1.model.InstansiModel;
+import com.apap.tugas1.model.JabatanPegawaiModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.apap.tugas1.model.PegawaiModel;
@@ -16,6 +18,12 @@ public class PegawaiServiceImpl implements PegawaiService {
     @Autowired
     private PegawaiDb pegawaiDb;
 
+    @Autowired
+    private JabatanPegawaiService jabatanPegawaiService;
+
+    @Autowired
+    private InstansiService instansiService;
+
     @Override
     public Optional<PegawaiModel> getPegawaiDetailByNip(String nip) {
         return pegawaiDb.findByNip(nip);
@@ -23,7 +31,12 @@ public class PegawaiServiceImpl implements PegawaiService {
 
     @Override
     public void addPegawai(PegawaiModel pegawai) {
-        pegawaiDb.saveAndFlush(pegawai);
+        pegawaiDb.save(pegawai);
+    }
+
+    @Override
+    public List<PegawaiModel> findAllByInstansi(long id) {
+        return pegawaiDb.findAllByIdInstansi_Id(id);
     }
 
     @Override
@@ -52,6 +65,24 @@ public class PegawaiServiceImpl implements PegawaiService {
         }
 
         return pegawaiTua;
+    }
+
+    @Override
+    public int hitungGaji(String nip) {
+        PegawaiModel pegawai = getPegawaiDetailByNip(nip).get();
+
+        List<JabatanPegawaiModel> jabatanPegawai = jabatanPegawaiService.getJabatanByIdPegawai(pegawai.getId());
+        InstansiModel instansi = instansiService.getInstansiById(pegawai.getIdInstansi().getId());
+
+        int gaji = 0;
+
+        for(JabatanPegawaiModel jabatan : jabatanPegawai) {
+            int temp = (int)(jabatan.getIdJabatan().getGajiPokok() + (instansi.getIdProvinsi().getPresentaseTunjangan() * jabatan.getIdJabatan().getGajiPokok()) / 100);
+            if(gaji < temp){
+                gaji = temp;
+            }
+        }
+        return gaji;
     }
 
     @Override

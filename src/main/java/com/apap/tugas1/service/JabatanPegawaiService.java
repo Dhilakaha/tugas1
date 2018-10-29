@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface JabatanPegawaiService{
     List<JabatanPegawaiModel> getJabatanByIdPegawai(long id);
     List<JabatanPegawaiModel> getListJabatanPegawai(long idJabatan);
+    void addJabatanPegawai(JabatanPegawaiModel jabatanPegawai);
 }

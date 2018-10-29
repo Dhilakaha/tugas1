@@ -4,6 +4,8 @@
     <title>Tambah Pegawai</title>
     <object th:include="fragments/fragment :: css" th:remove="tag"></object>
     <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -21,7 +23,7 @@
                         <form th:action ="@{/pegawai/tambah}" th:object="${pegawai}" method="POST">
                             <div class="form-group">
                                 <label><b>Nama</b></label>
-                                <input type = "text" class="form-control" name = "namaPegawai" placeholder="Nama" required="required"/>
+                                <input type = "text" class="form-control" name = "nama" placeholder="Nama" required="required"/>
                             </div>
 
                             <div class="form-group">
@@ -55,29 +57,34 @@
 
                             <div class="form-group">
                                 <label><b>Nama Instansi</b></label>
-                                <select  th:value="${listInstansi}" class="form-control" name="instansi" id="instansi" required="required" >
+                                <select  name="idInstansi" class="form-control" id="instansi" required="required" >
                                     <option disabled="disabled" selected="selected" >
                                         --Pilih Instansi--
-                                    </option>
-                                    <option th:each="instansi : ${listInstansi}"
-                                            th:value="${instansi.getId()}"
-                                            th:text="${instansi.getNama()}">
                                     </option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label><b>Jabatan</b></label>
-                                <select  th:value="${listJabatan}" class="form-control" name="jabatan" id="jabatan" required="required" >
-                                    <option disabled="disabled" selected="selected" >
-                                        --Pilih Jabatan--
-                                    </option>
-                                    <option th:each="jabatan : ${listJabatan}"
-                                            th:value="${jabatan.getId()}"
-                                            th:text="${jabatan.getNamaJabatan()}">
-                                    </option>
-                                </select>
+                                <div id = "listJabatan">
+                                    <select class="form-control" name="listJabatan[0].idJabatan" id="jabatan" required="required" >
+                                        <option disabled="disabled" selected="selected" >
+                                            --Pilih Jabatan--
+                                        </option>
+                                        <option th:each="jabatan : ${listJabatan}"
+                                                th:value="${jabatan.getId()}"
+                                                th:text="${jabatan.getNamaJabatan()}">
+                                        </option>
+                                    </select>
+                                    <br>
+                                </div>
                             </div>
+
+                            <div>
+                                <a id="tambahJabatan" >Tambah jabatan</a>
+                            </div>
+                            <br>
+
                             <button type="submit" class="btn btn-primary">Simpan</button>
                         </form>
                     </div>
@@ -86,4 +93,58 @@
         </div>
     </div>
 </body>
+<script>
+    $(document).ready( function () {
+        var idxJabatan = 0;
+        $("#provinsi").change(function(){
+            var idProv = $(this).val();
+            $.ajax({
+                method : "GET",
+                data : {id:idProv},
+                url : "/pegawai/instansi",
+                dataType : "json",
+                success: function(data){
+                    var obj = JSON.stringify(data);
+                    var objs = JSON.parse(obj);
+                    $("#instansi").empty();
+                    $("#instansi").append("<option disabled=\"disabled\" selected=\"selected\">--Pilih Instansi--</option>");
+                    for (x in objs){
+                        console.log(objs[x].nama);
+                        $("#instansi").append("<option value = "+ "'"+objs[x].id+"'"+">" + objs[x].nama +"</option>");
+                        console.log("<option value = "+ "'"+objs[x].id+"'"+">" + objs[x].nama +"</option>");
+                    }
+                }
+
+            });
+        });
+
+        $("#tambahJabatan").click(function(){
+            $.ajax({
+                method : "GET",
+                url : "/pegawai/getjabatan",
+                dataType : "json",
+                success: function(data){
+                    var jbt = JSON.stringify(data);
+                    var jabatans = JSON.parse(jbt);
+                    console.log(jabatan);
+                    idxJabatan++;
+                    var selectHtml = '<select class="form-control" id="jabatan" name="listJabatan['+ idxJabatan +'].idJabatan">\n';
+
+                    var optionsHtml = '<option value=null>--Pilih Jabatan--</option>';
+
+                    $.each( jabatans, function(i, jabatan ) {
+                        optionsHtml += '<option value=' + jabatan.id + '>' + jabatan.namaJabatan + '</option>';
+                    });
+
+                    var closingSelectHtml = '</select><br>';
+
+                    $( "#listJabatan" ).append(selectHtml + optionsHtml + closingSelectHtml);
+                }
+
+            });
+        });
+    });
+
+</script>
 </html>
+

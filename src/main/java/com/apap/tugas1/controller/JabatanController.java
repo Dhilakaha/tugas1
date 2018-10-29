@@ -75,7 +75,6 @@ public class JabatanController {
         Optional<JabatanModel> objJabatan = jabatanService.getJabatanById(id);
 
         if(jabatan.isEmpty()) {
-            System.out.println("boleh di hapus");
             jabatanService.deleteById(id);
             model.addAttribute("pesan", "Jabatan berhasil dihapus!");
             return "updateData";

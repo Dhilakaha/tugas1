@@ -36,6 +36,10 @@
                                 <td th:text="${pegawai.tanggalLahir}"></td>
                             </tr>
                             <tr>
+                                <td><b>Tahun Masuk</b></td>
+                                <td th:text="${pegawai.tahunMasuk}"></td>
+                            </tr>
+                            <tr>
                                 <td><b>Nama Instansi</b></td>
                                 <td th:text="${pegawai.getIdInstansi().getNama()} +' - '+${instansi.getIdProvinsi().getNama()}"></td>
                             </tr>

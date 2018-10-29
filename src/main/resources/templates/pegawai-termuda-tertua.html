@@ -36,6 +36,10 @@
                                 <td th:text="${termuda.tanggalLahir}"></td>
                             </tr>
                             <tr>
+                                <td><b>Tahun Masuk</b></td>
+                                <td th:text="${termuda.tahunMasuk}"></td>
+                            </tr>
+                            <tr>
                                 <td><b>Nama Instansi</b></td>
                                 <td th:text="${termuda.getIdInstansi().getNama()} +' - '+${instansiPM.getIdProvinsi().getNama()}"></td>
                             </tr>
@@ -80,6 +84,10 @@
                             <tr>
                                 <td><b>Tanggal Lahir</b></td>
                                 <td th:text="${tertua.tanggalLahir}"></td>
+                            </tr>
+                            <tr>
+                                <td><b>Tahun Masuk</b></td>
+                                <td th:text="${tertua.tahunMasuk}"></td>
                             </tr>
                             <tr>
                                 <td><b>Nama Instansi</b></td>

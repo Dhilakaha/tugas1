@@ -7,10 +7,7 @@ import com.apap.tugas1.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class PegawaiController {
@@ -47,7 +44,7 @@ public class PegawaiController {
         List<JabatanPegawaiModel> jabatanPegawai = jabatanPegawaiService.getJabatanByIdPegawai(pegawai.getId());
         InstansiModel instansi = instansiService.getInstansiById(pegawai.getIdInstansi().getId());
 
-        int gaji = hitungGaji(nip);
+        int gaji = pegawaiService.hitungGaji(nip);
 
         model.addAttribute("pegawai", pegawai);
         model.addAttribute("instansi", instansi);
@@ -65,9 +62,52 @@ public class PegawaiController {
         model.addAttribute("pegawai", new PegawaiModel());
 
         model.addAttribute("listProvinsi", listProvinsi);
-        model.addAttribute("listInstansi", listInstansi);
+        //model.addAttribute("listInstansi", listInstansi);
         model.addAttribute("listJabatan", listJabatan);
         return "addPegawai";
+    }
+
+    @RequestMapping(value = "/pegawai/tambah", method = RequestMethod.POST)
+    private String addPegawai(@ModelAttribute PegawaiModel pegawai, Model model){
+        String nip = "";
+        String idInstansi = String.valueOf(pegawai.getIdInstansi().getId());
+        String tahunMasuk = pegawai.getTahunMasuk();
+        List<PegawaiModel> listPegawai = pegawaiService.findAllByInstansi(pegawai.getIdInstansi().getId());
+        String digitAkhir = "0";
+
+        String tglLahir = pegawai.getTanggalLahir().toString();
+        String tahunLahir = tglLahir.substring(2,4);
+        String bulanLahir = tglLahir.substring(5,7);
+        String hariLahir = tglLahir.substring(8,10);
+
+        tglLahir = hariLahir+bulanLahir+tahunLahir;
+
+        int sama = 0 ;
+        for( PegawaiModel employee : listPegawai) {
+            if(pegawai.getTanggalLahir().compareTo(employee.getTanggalLahir()) == 0 && pegawai.getTahunMasuk().equals(employee.getTahunMasuk())){
+                sama++;
+            }
+        }
+
+        digitAkhir += Integer.toString(sama+1);
+
+        nip = idInstansi + tglLahir + tahunMasuk + digitAkhir;
+        pegawai.setNip(nip);
+
+        System.out.println(nip);
+
+        pegawaiService.addPegawai(pegawai);
+
+        PegawaiModel idPegawai = pegawaiService.getPegawaiDetailByNip(nip).get();
+        List<JabatanPegawaiModel> listJabatan = pegawai.getListJabatan();
+
+        for(JabatanPegawaiModel jabatan : listJabatan) {
+            jabatan.setIdPegawai(idPegawai);
+            jabatanPegawaiService.addJabatanPegawai(jabatan);
+        }
+
+        model.addAttribute("pesan", "Pegawai dengan NIP " +nip+ " berhasil ditambahkan");
+        return "updateData";
     }
 
     @RequestMapping(value = "/pegawai/ubah", method = RequestMethod.GET)
@@ -123,8 +163,8 @@ public class PegawaiController {
         InstansiModel instansiPM = instansiService.getInstansiById(pegawaitermuda.getIdInstansi().getId());
         InstansiModel instansiPT = instansiService.getInstansiById(pegawaitertua.getIdInstansi().getId());
 
-        int gajiTermuda = hitungGaji(pegawaitermuda.getNip());
-        int gajiTertua = hitungGaji(pegawaitertua.getNip());
+        int gajiTermuda = pegawaiService.hitungGaji(pegawaitermuda.getNip());
+        int gajiTertua = pegawaiService.hitungGaji(pegawaitertua.getNip());
 
         model.addAttribute("termuda", pegawaitermuda);
         model.addAttribute("instansiPM", instansiPM);
@@ -139,21 +179,17 @@ public class PegawaiController {
         return "pegawai-termuda-tertua";
     }
 
-    public int hitungGaji(String nip){
-        PegawaiModel pegawai = pegawaiService.getPegawaiDetailByNip(nip).get();
+    @RequestMapping(value = "/pegawai/instansi", method = RequestMethod.GET)
+    private @ResponseBody List<InstansiModel> instansi(@RequestParam(value = "id") int idProvinsi) {
+        ProvinsiModel provinsi = provinsiService.getProvinsiById(idProvinsi);
+        List<InstansiModel> instansi = instansiService.getAllInstansiByProv(provinsi);
+        return instansi ;
+    }
 
-        List<JabatanPegawaiModel> jabatanPegawai = jabatanPegawaiService.getJabatanByIdPegawai(pegawai.getId());
-        InstansiModel instansi = instansiService.getInstansiById(pegawai.getIdInstansi().getId());
-
-        int gaji = 0;
-
-        for(JabatanPegawaiModel jabatan : jabatanPegawai) {
-            int temp = (int)(jabatan.getIdJabatan().getGajiPokok() + (instansi.getIdProvinsi().getPresentaseTunjangan() * jabatan.getIdJabatan().getGajiPokok()) / 100);
-            if(gaji < temp){
-                gaji = temp;
-            }
-        }
-        return gaji;
+    @RequestMapping(value = "/pegawai/getjabatan", method = RequestMethod.GET)
+    private @ResponseBody List<JabatanModel> getJabatan(Model model) {
+        List<JabatanModel> listJabatan = jabatanService.getAllJabatan();
+        return listJabatan;
     }
 
 
